@@ -92,37 +92,54 @@ document.addEventListener('DOMContentLoaded', () => {
    
    //Modal Call Window
 
-   const modalTrigger = document.querySelectorAll('[data-modal]'),
+   const modalOpen = document.querySelectorAll('[data-modal]'),
          modal = document.querySelector('.modal'),
-         modalClose = document.querySelector('[data-close]');
-   
-   modalTrigger.forEach(btn =>{
-      btn.addEventListener('click', () =>{
-         modal.classList.add('show');
-         modal.classList.remove('hide');
-         // modal.classList.toggle('show');
-         document.body.style.overflow = 'hidden';
-      });
-   });
+         modalClose = document.querySelector('[data-close]'),
+         pageHeight = document.body.scrollHeight;
 
-   let closeModal = () => {
+   let openModalFunc = () => {
+      modal.classList.add('show');
+      // modal.classList.toggle('show');
+      document.body.style.overflow = 'hidden';
+       modal.classList.remove('hide');
+       clearInterval(modalTimer);
+   };
+      
+   let closeModalFunc = () => {
       modal.classList.add('hide');
       modal.classList.remove('show');
       // modal.classList.toggle('show');
       document.body.style.overflow = '';
    };
 
-   modalClose.addEventListener('click', closeModal);
+   let showModalByScroll = () =>{
+      if(window.pageYOffset + document.documentElement.clientHeight === pageHeight) {
+         openModalFunc();
+         window.removeEventListener('scroll', showModalByScroll);
+      }
+   };
 
+   const modalTimer = setTimeout(openModalFunc, 30000);
+
+   window.addEventListener('scroll', showModalByScroll);
+
+   modalClose.addEventListener('click', closeModalFunc);
+
+   modalOpen.forEach(btn =>{
+      btn.addEventListener('click', openModalFunc);
+   });
+ 
    modal.addEventListener('click', (e) =>{
       if(e.target === modal) {
-      closeModal();
+      closeModalFunc();
       }
    });
 
    document.addEventListener('keydown', (e) =>{
       if(e.code === 'Escape' && modal.classList.contains('show')){
-         closeModal();
+         closeModalFunc();
       }
    });
 });
+
+

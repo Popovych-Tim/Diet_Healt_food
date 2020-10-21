@@ -113,13 +113,13 @@ document.addEventListener('DOMContentLoaded', () => {
    };
 
    let showModalByScroll = () =>{
-      if(window.pageYOffset + document.documentElement.clientHeight === pageHeight) {
+      if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
          openModalFunc();
          window.removeEventListener('scroll', showModalByScroll);
       }
    };
 
-   // const modalTimer = setTimeout(openModalFunc, 30000);
+   const modalTimer = setTimeout(openModalFunc, 30000);
 
    window.addEventListener('scroll', showModalByScroll);
 

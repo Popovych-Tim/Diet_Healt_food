@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
    const modalOpen = document.querySelectorAll('[data-modal]'),
          modal = document.querySelector('.modal'),
          modalClose = document.querySelector('[data-close]'),
-         pageHeight = document.body.scrollHeight;
+         pageHeight = document.documentElement.scrollHeight;
 
    let openModalFunc = () => {
       modal.classList.add('show');
@@ -110,10 +110,10 @@ document.addEventListener('DOMContentLoaded', () => {
       modal.classList.remove('show');
       // modal.classList.toggle('show');
       document.body.style.overflow = '';
-   };
+   };    
 
    let showModalByScroll = () =>{
-      if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
+      if (window.pageYOffset + document.documentElement.clientHeight >= pageHeight) {
          openModalFunc();
          window.removeEventListener('scroll', showModalByScroll);
       }
@@ -144,12 +144,13 @@ document.addEventListener('DOMContentLoaded', () => {
    // используем Классы для карточек 
 
    class MenuCard {
-      constructor(img, aleterImg, title, descr, price, parentSelector) {
+      constructor(img, aleterImg, title, descr, price, parentSelector, ...classes) {
          this.img = img;
          this.aleterImg = aleterImg;
          this.title = title;
          this.descr = descr;
          this.price = price;
+         this.classes = classes;
          this.parent = document.querySelector(parentSelector);
          this.tranfer = 27;
          this.changeCurrency();
@@ -160,16 +161,19 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       render() {
          const element = document.createElement('div');
-         element.innerHTML = `
-            <div class="menu__item">
-               <img src=${this.img} alt=${this.aleterImg}>
-               <h3 class="menu__item-subtitle">${this.title}</h3>
-               <div class="menu__item-descr">${this.descr}</div>
-               <div class="menu__item-divider"></div>
-               <div class="menu__item-price">
+         if (this.classes.length === 0) {
+            element.classList.add('menu__item');
+         } else {
+            this.classes.forEach(className => element.classList.add(className));
+         }
+            element.innerHTML = `
+            <img src=${this.img} alt=${this.aleterImg}>
+            <h3 class="menu__item-subtitle">${this.title}</h3>
+            <div class="menu__item-descr">${this.descr}</div>
+            <div class="menu__item-divider"></div>
+            <div class="menu__item-price">
                <div class="menu__item-cost">Цена:</div>
                <div class="menu__item-total"><span>${this.price}</span> грн/день</div>
-               </div>
             </div>
          `;
          this.parent.append(element);
@@ -182,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
       'Меню "Фитнес"',
       'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
       9,
-      '.menu .container'
+      '.menu .container',
    ).render();
 
    new MenuCard(
@@ -191,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
       'Меню “Премиум”',
       'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан! //just keeping rect lines simillar//',
       14,
-      '.menu .container'
+      '.menu .container',
    ).render();
 
    new MenuCard(
@@ -200,8 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
       'Меню "Постное"',
       'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
       21,
-      '.menu .container'
+      '.menu .container',
+      'menu__item'
    ).render();
 });
-
-

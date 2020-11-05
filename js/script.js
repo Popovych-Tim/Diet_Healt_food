@@ -94,7 +94,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
    const modalOpen = document.querySelectorAll('[data-modal]'),
          modal = document.querySelector('.modal'),
-         modalClose = document.querySelector('[data-close]'),
          pageHeight = document.documentElement.scrollHeight;
 
    let openModalFunc = () => {
@@ -119,18 +118,16 @@ document.addEventListener('DOMContentLoaded', () => {
       }
    };
 
-   const modalTimer = setTimeout(openModalFunc, 30000);
+   const modalTimer = setTimeout(openModalFunc, 50000);
 
    window.addEventListener('scroll', showModalByScroll);
-
-   modalClose.addEventListener('click', closeModalFunc);
 
    modalOpen.forEach(btn =>{
       btn.addEventListener('click', openModalFunc);
    });
  
    modal.addEventListener('click', (e) =>{
-      if(e.target === modal) {
+      if(e.target === modal || e.target.getAttribute('data-close') === '') {
       closeModalFunc();
       }
    });
@@ -207,4 +204,98 @@ document.addEventListener('DOMContentLoaded', () => {
       '.menu .container',
       'menu__item'
    ).render();
+
+   //Forms
+
+   const message = {
+      loading: 'img/form/spinner.svg',
+      success: 'We will call You soon!',
+      failure: 'error'
+   };
+ 
+   const forms = document.querySelectorAll('form');
+
+   forms.forEach(item => {
+      postData(item);
+   });
+
+   function postData(form) {
+      form.addEventListener('submit', (e) => {
+         e.preventDefault();
+
+         const statusMessage = document.createElement('img');
+         
+         statusMessage.src = message.loading;
+         statusMessage.style.cssText = `
+            display: block;
+            margin: 0 auto;  
+         `;
+         form.insertAdjacentElement('afterend', statusMessage);
+
+
+         const request = new XMLHttpRequest();
+         request.open('POST', 'server.php');
+
+         // request.setRequestHeader('Content-type', 'multipart/form-data');
+         const formData = new FormData(form);
+
+         request.send(formData);
+                           // Dlia servera s formatom JSON
+
+         // request.setRequestHeader('Content-type', 'application/json');
+         // const formData = new FormData(form);
+
+         // const obj = {};
+
+         // formData.forEach(function(key, value) {
+         //    obj[key] = value;
+         // });
+
+         // const json = JSON.stringify(obj);
+
+         // request.send(json);
+ 
+         request.addEventListener('load', () => {
+            if (request.status === 200) {
+               console.log(request.response);
+               showThanksModal(message.success);
+               form.reset();
+               statusMessage.remove();
+            }else {
+               showThanksModal(message.failure);
+            }
+         });    
+      });
+   }
+
+   function showThanksModal(message) {
+      const prevModal = document.querySelector('.modal__dialog');
+
+      prevModal.classList.add('hide');
+      openModalFunc();
+
+      const thanksWrapper = document.createElement('div');
+      
+      thanksWrapper.classList.add('modal__dialog');
+      thanksWrapper.innerHTML = `
+         <div class="modal__content">
+            <div  class="modal__close" data-close>×</div>
+            <div class="modal__title">${message}</div>
+         </div>
+      `;
+
+      document.querySelector('.modal').append(thanksWrapper);
+      setTimeout(() => {
+         thanksWrapper.remove();
+         prevModal.classList.add('show');
+         prevModal.classList.remove('hide');
+         closeModalFunc();
+      },5000);
+   } 
+
+
+
+
+
+
 });

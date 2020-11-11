@@ -1,0 +1,22 @@
+{
+  "name": "healthfood",
+  "version": "1.0.0",
+  "description": "",
+  "main": "scriptTedt.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Popovych-Tim/Tabs_Creating.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Popovych-Tim/Tabs_Creating/issues"
+  },
+  "homepage": "https://github.com/Popovych-Tim/Tabs_Creating#readme",
+  "devDependencies": {
+    "json-server": "^0.16.2"
+  }
+}

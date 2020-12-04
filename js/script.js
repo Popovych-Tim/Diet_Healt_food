@@ -1,36 +1,36 @@
 document.addEventListener('DOMContentLoaded', () => {
    //Tabs
    const tabs = document.querySelectorAll('.tabheader__item'),
-         tabsContent = document.querySelectorAll('.tabcontent'),
-         tabsParent = document.querySelector('.tabheader__items');
+      tabsContent = document.querySelectorAll('.tabcontent'),
+      tabsParent = document.querySelector('.tabheader__items');
 
    function hideTabsContent() {
       tabsContent.forEach(item => {
          item.classList.add('hide');
          item.classList.remove('show', 'fade');
-      });    
-      
+      });
+
       tabs.forEach(item => {
          item.classList.remove('tabheader__item_active');
       });
    }
 
-   function showTabsContent(i = 0){
-      tabsContent[i].classList.add('show','fade');
+   function showTabsContent(i = 0) {
+      tabsContent[i].classList.add('show', 'fade');
       tabsContent[i].classList.remove('hide');
       tabs[i].classList.add('tabheader__item_active');
    }
 
-   hideTabsContent(); 
+   hideTabsContent();
    showTabsContent();
 
    tabsParent.addEventListener('click', (event) => {
       const target = event.target;
 
-      if(target && target.classList.contains('tabheader__item')) {
+      if (target && target.classList.contains('tabheader__item')) {
          tabs.forEach((item, i) => {
             if (target == item) {
-               hideTabsContent(); 
+               hideTabsContent();
                showTabsContent(i);
             }
          });
@@ -42,11 +42,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
    let getTimeRemaining = (endtime) => {
       const t = Date.parse(endtime) - Date.parse(new Date()),
-            days = Math.floor(t / (1000 * 60 * 60 * 24)),
-            hours = Math.floor((t / (1000 * 60 * 60) % 24)),
-            minutes = Math.floor((t / 1000 / 60) % 60),
-            seconds = Math.floor((t / 1000) % 60);
-      
+         days = Math.floor(t / (1000 * 60 * 60 * 24)),
+         hours = Math.floor((t / (1000 * 60 * 60) % 24)),
+         minutes = Math.floor((t / 1000 / 60) % 60),
+         seconds = Math.floor((t / 1000) % 60);
+
       return {
          'total': t,
          'days': days,
@@ -55,22 +55,22 @@ document.addEventListener('DOMContentLoaded', () => {
          'seconds': seconds
       };
    };
-   
-   let getZero = (num) =>{
-      if (num >=0 && num <10){
+
+   let getZero = (num) => {
+      if (num >= 0 && num < 10) {
          return `0${num}`;
       } else {
          return num;
       }
    };
-      
+
    let setClock = (selector, endtime) => {
       const timer = document.querySelector(selector),
-            days = timer.querySelector('#days'),
-            hours = timer.querySelector('#hours'),
-            minutes = timer.querySelector('#minutes'),
-            seconds = timer.querySelector('#seconds'),
-            timeInterval = setInterval(updateClock, 1000);
+         days = timer.querySelector('#days'),
+         hours = timer.querySelector('#hours'),
+         minutes = timer.querySelector('#minutes'),
+         seconds = timer.querySelector('#seconds'),
+         timeInterval = setInterval(updateClock, 1000);
 
       updateClock();
 
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
          hours.innerHTML = getZero(t.hours);
          minutes.innerHTML = getZero(t.minutes);
          seconds.innerHTML = getZero(t.seconds);
-         
+
          if (t.total <= 0) {
             clearInterval(timeInterval);
          }
@@ -89,29 +89,29 @@ document.addEventListener('DOMContentLoaded', () => {
    };
 
    setClock('.timer', deadline);
-   
+
    //Modal Call Window
 
    const modalOpen = document.querySelectorAll('[data-modal]'),
-         modal = document.querySelector('.modal'),
-         pageHeight = document.documentElement.scrollHeight;
+      modal = document.querySelector('.modal'),
+      pageHeight = document.documentElement.scrollHeight;
 
    let openModalFunc = () => {
       modal.classList.add('show');
       // modal.classList.toggle('show');
       document.body.style.overflow = 'hidden';
-       modal.classList.remove('hide');
-       clearInterval(modalTimer);
+      modal.classList.remove('hide');
+      clearInterval(modalTimer);
    };
-      
+
    let closeModalFunc = () => {
       modal.classList.add('hide');
       modal.classList.remove('show');
       // modal.classList.toggle('show');
       document.body.style.overflow = '';
-   };    
+   };
 
-   let showModalByScroll = () =>{
+   let showModalByScroll = () => {
       if (window.pageYOffset + document.documentElement.clientHeight >= pageHeight) {
          openModalFunc();
          window.removeEventListener('scroll', showModalByScroll);
@@ -122,18 +122,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
    window.addEventListener('scroll', showModalByScroll);
 
-   modalOpen.forEach(btn =>{
+   modalOpen.forEach(btn => {
       btn.addEventListener('click', openModalFunc);
    });
- 
-   modal.addEventListener('click', (e) =>{
-      if(e.target === modal || e.target.getAttribute('data-close') === '') {
-      closeModalFunc();
+
+   modal.addEventListener('click', (e) => {
+      if (e.target === modal || e.target.getAttribute('data-close') === '') {
+         closeModalFunc();
       }
    });
 
-   document.addEventListener('keydown', (e) =>{
-      if(e.code === 'Escape' && modal.classList.contains('show')){
+   document.addEventListener('keydown', (e) => {
+      if (e.code === 'Escape' && modal.classList.contains('show')) {
          closeModalFunc();
       }
    });
@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
          } else {
             this.classes.forEach(className => element.classList.add(className));
          }
-            element.innerHTML = `
+         element.innerHTML = `
             <img src=${this.img} alt=${this.aleterImg}>
             <h3 class="menu__item-subtitle">${this.title}</h3>
             <div class="menu__item-descr">${this.descr}</div>
@@ -187,12 +187,21 @@ document.addEventListener('DOMContentLoaded', () => {
       return await res.json();
    };
 
-   getResourse('http://localhost:3000/menu')
-      .then(data => {
-         data.forEach(({img, altimg, title, descr, price}) => {
+   axios.get('http://localhost:3000/menu')
+       .then(data => {
+         data.data.forEach(({img, altimg, title, descr, price}) => {
             new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
          });
       });
+
+   // getResourse('http://localhost:3000/menu')
+   //    .then(data => {
+   //       data.forEach(({img, altimg, title, descr, price}) => {
+   //          new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+   //       });
+   //    });
+
+
 
    // Без Шаблонизации для "постройки" один раз:
 
@@ -227,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
       success: 'We will call You soon!',
       failure: 'error'
    };
- 
+
    const forms = document.querySelectorAll('form');
 
    forms.forEach(item => {
@@ -251,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
          e.preventDefault();
 
          const statusMessage = document.createElement('img');
-         
+
          statusMessage.src = message.loading;
          statusMessage.style.cssText = `
             display: block;
@@ -282,17 +291,17 @@ document.addEventListener('DOMContentLoaded', () => {
          const json = JSON.stringify(Object.fromEntries(formData.entries()));
 
          postData('http://localhost:3000/requests', json)
-         .then(data =>{ 
-            console.log(data);
-            showThanksModal(message.success);
-            statusMessage.remove();
-         })
-         .catch(() => {
-            showThanksModal(message.failure);
-         })
-         .finally(() => {
-            form.reset();
-         });
+            .then(data => {
+               console.log(data);
+               showThanksModal(message.success);
+               statusMessage.remove();
+            })
+            .catch(() => {
+               showThanksModal(message.failure);
+            })
+            .finally(() => {
+               form.reset();
+            });
          /* */
       });
    }
@@ -304,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
       openModalFunc();
 
       const thanksWrapper = document.createElement('div');
-      
+
       thanksWrapper.classList.add('modal__dialog');
       thanksWrapper.innerHTML = `
          <div class="modal__content">
@@ -319,9 +328,9 @@ document.addEventListener('DOMContentLoaded', () => {
          prevModal.classList.add('show');
          prevModal.classList.remove('hide');
          closeModalFunc();
-      },5000);
-   } 
- 
+      }, 5000);
+   }
+
    // fetch('http://localhost:3000/menu')
    //    .then(data => data.json())
    //    .then(res => console.log(res));
